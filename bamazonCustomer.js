@@ -1,3 +1,7 @@
+// ===========================================================
+// VARIABLES
+// ===========================================================
+
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
@@ -20,6 +24,10 @@ connection.connect(function (err) {
   showInventory();
 });
 
+// ===========================================================
+// FUNCTIONS
+// ===========================================================
+
 // First display all of the items available for sale. Include the ids, names, and prices of products for sale.
 function showInventory() {
   connection.query("SELECT * FROM products", function (err, res) {
@@ -30,7 +38,7 @@ function showInventory() {
     // Log all results of the SELECT statement
     for (var i = 0; i < res.length; i++) {
       console.log(
-        "Item ID: " + res[i].item_id + " | " + "Product Name: " + res[i].product_name + " | " + "Department: " + res[i].department_name + " | " + "Price: $" + res[i].price + " | " + "Stock Qty: " + res[i].stock_quantity);
+        "Item ID: " + res[i].item_id + " | " + "Product Name: " + res[i].product_name + " | " + "Price: $" + res[i].price);
     }
     console.log(divider);
     customerMenu();
@@ -53,15 +61,35 @@ function customerMenu() {
         message: "Please enter the number of units of the product you would like to buy:"
       }
     ]).then(function (answer) {
-      console.log(answer.prodPick);
-      console.log(answer.prodUnits);
-    });
-}
+      connection.query("SELECT * FROM products WHERE ?", {
+        item_id: answer.prodPick
+      }, function (err, res) {
+        console.log("Item ID: " + res[0].item_id + " | " + "Product Name: " + res[0].product_name + " | " + "Price: $" + res[0].price);
 
-// 7. Once the customer has placed the order, your application should check if your store has enough of the product to meet the customer's request.
-
-//    * If not, the app should log a phrase like `Insufficient quantity!`, and then prevent the order from going through.
-
-// 8. However, if your store _does_ have enough of the product, you should fulfill the customer's order.
-//    * This means updating the SQL database to reflect the remaining quantity.
-//    * Once the update goes through, show the customer the total cost of their purchase.
+        // Check for enough product inventory
+        if (res[0].stock_quantity < answer.prodUnits) {
+          // If not, log `Insufficient quantity!`, and stop the order
+          console.log("Sorry, we have insufficient quantity to complete your order.");
+          connection.end();
+        } else {
+          // If inventory available, fulfill the order.
+          // * Update the SQL database to the remaining quantity
+          connection.query(
+            "UPDATE products SET ? WHERE ?", [{
+                stock_quantity: (res[0].stock_quantity - answer.prodUnits)
+              },
+              {
+                item_id: answer.prodPick
+              }
+            ],
+            function (error) {
+              if (error) throw err;
+              // * Show the customer the total purchase cost
+              console.log("Order quantity: " + answer.prodUnits + " | " + "Price: $" + res[0].price + " | " + "Total purchase: $" + (answer.prodUnits * res[0].price));
+              connection.end();
+            }
+          );
+        }
+      })
+    })
+};
