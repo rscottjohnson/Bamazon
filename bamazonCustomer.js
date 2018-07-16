@@ -33,13 +33,30 @@ function showInventory() {
         "Item ID: " + res[i].item_id + " | " + "Product Name: " + res[i].product_name + " | " + "Department: " + res[i].department_name + " | " + "Price: $" + res[i].price + " | " + "Stock Qty: " + res[i].stock_quantity);
     }
     console.log(divider);
+    customerMenu();
   });
 }
 
-// 6. The app should then prompt users with two messages.
-
-//    * The first should ask them the ID of the product they would like to buy.
-//    * The second message should ask how many units of the product they would like to buy.
+// Prompt user with two messages:
+// * The ID of the product they would like to buy
+// * How many units of the product they would like to buy
+function customerMenu() {
+  inquirer
+    .prompt([{
+        name: "prodPick",
+        type: "input",
+        message: "Welcome to Bamazon.  Please enter the Item ID of the product that you would like to buy:"
+      },
+      {
+        name: "prodUnits",
+        type: "input",
+        message: "Please enter the number of units of the product you would like to buy:"
+      }
+    ]).then(function (answer) {
+      console.log(answer.prodPick);
+      console.log(answer.prodUnits);
+    });
+}
 
 // 7. Once the customer has placed the order, your application should check if your store has enough of the product to meet the customer's request.
 
@@ -48,38 +65,3 @@ function showInventory() {
 // 8. However, if your store _does_ have enough of the product, you should fulfill the customer's order.
 //    * This means updating the SQL database to reflect the remaining quantity.
 //    * Once the update goes through, show the customer the total cost of their purchase.
-
-// function runSearch() {
-//   inquirer
-//     .prompt({
-//       name: "action",
-//       type: "list",
-//       message: "What would you like to do?",
-//       choices: [
-//         "Find songs by artist",
-//         "Find all artists who appear more than once",
-//         "Find data within a specific range",
-//         "Search for a specific song"
-//       ]
-//     })
-//     .then(function (answer) {
-//       switch (answer.action) {
-//         case "Find songs by artist":
-//           artistSearch();
-//           break;
-
-//         case "Find all artists who appear more than once":
-//           multiSearch();
-//           break;
-
-//         case "Find data within a specific range":
-//           rangeSearch();
-//           break;
-
-//         case "Search for a specific song":
-//           songSearch();
-//           break;
-//       }
-//     });
-// }
-
