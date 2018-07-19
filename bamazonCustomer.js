@@ -64,12 +64,14 @@ function customerMenu() {
       connection.query("SELECT * FROM products WHERE ?", {
         item_id: answer.prodPick
       }, function (err, res) {
+        console.log(divider);
         console.log("Item ID: " + res[0].item_id + " | " + "Product Name: " + res[0].product_name + " | " + "Price: $" + res[0].price);
 
         // Check for enough product inventory
         if (res[0].stock_quantity < answer.prodUnits) {
           // If not, log `Insufficient quantity!`, and stop the order
           console.log("Sorry, we have insufficient quantity to complete your order.");
+          console.log(divider);
           connection.end();
         } else {
           // If inventory available, fulfill the order.
@@ -86,6 +88,7 @@ function customerMenu() {
               if (error) throw err;
               // * Show the customer the total purchase cost
               console.log("Order quantity: " + answer.prodUnits + " | " + "Price: $" + res[0].price + " | " + "Total purchase: $" + (answer.prodUnits * res[0].price));
+              console.log(divider);
               connection.end();
             }
           );
