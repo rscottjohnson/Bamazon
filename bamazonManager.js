@@ -4,8 +4,13 @@
 
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var ctable = require("console.table");
+
 var divider =
-  "\n============================================================\n";
+  "============================================================";
+
+var resArray = [];
+var tableArray = [];
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -67,6 +72,10 @@ function managerOptions() {
 }
 
 function saleProducts() {
+  // Empty the arrays that support console.table
+  resArray = [];
+  tableArray = [];
+
   var query = "SELECT item_id, product_name, price, stock_quantity FROM products";
   connection.query(query, function (err, res) {
 
@@ -74,17 +83,25 @@ function saleProducts() {
     console.log("Current products for sale:");
     console.log(divider);
 
-    // Log all results of the SELECT statement
+    // Build the table array
     for (var i = 0; i < res.length; i++) {
-      console.log(
-        "Item ID: " + res[i].item_id + " | " + "Product Name: " + res[i].product_name + " | " + "Price: $" + res[i].price + " | " + "Stock Qty: " + res[i].stock_quantity);
+      resArray.push(res[i].item_id, res[i].product_name, res[i].price, res[i].stock_quantity);
+      tableArray.push(resArray);
+      resArray = [];
     }
+
+    // Console log the table
+    console.table(["Item ID", "Product Name", "Price ($)", "Stock Quantity"], tableArray);
     console.log(divider);
     managerOptions();
   });
 }
 
 function lowInventory() {
+  // Empty the arrays that support console.table
+  resArray = [];
+  tableArray = [];
+
   var query = "SELECT item_id, product_name, price, stock_quantity FROM products HAVING stock_quantity < 5";
   connection.query(query, function (err, res) {
 
@@ -95,11 +112,15 @@ function lowInventory() {
     if (res.length === 0) {
       console.log("NONE");
     } else {
-      // Log all results of the SELECT statement
+      
+      // Build the table array
       for (var i = 0; i < res.length; i++) {
-        console.log(
-          "Item ID: " + res[i].item_id + " | " + "Product Name: " + res[i].product_name + " | " + "Price: $" + res[i].price + " | " + "Stock Qty: " + res[i].stock_quantity);
+        resArray.push(res[i].item_id, res[i].product_name, res[i].price, res[i].stock_quantity);
+        tableArray.push(resArray);
+        resArray = [];
       }
+      // Console log the table
+      console.table(["Item ID", "Product Name", "Price ($)", "Stock Quantity"], tableArray);
     }
     console.log(divider);
     managerOptions();

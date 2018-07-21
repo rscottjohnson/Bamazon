@@ -7,7 +7,7 @@ var inquirer = require("inquirer");
 var ctable = require("console.table");
 
 var divider =
-  "============================================================\n";
+  "============================================================";
 
 var resArray = [];
 var tableArray = [];
