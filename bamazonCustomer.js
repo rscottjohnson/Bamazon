@@ -49,50 +49,67 @@ function showInventory() {
 // * The ID of the product they would like to buy
 // * How many units of the product they would like to buy
 function customerMenu() {
-  inquirer
-    .prompt([{
-        name: "prodPick",
-        type: "input",
-        message: "Welcome to Bamazon.  Please enter the Item ID of the product that you would like to buy:"
-      },
-      {
-        name: "prodUnits",
-        type: "input",
-        message: "Please enter the number of units of the product you would like to buy:"
-      }
-    ]).then(function (answer) {
-      connection.query("SELECT * FROM products WHERE ?", {
-        item_id: answer.prodPick
-      }, function (err, res) {
-        console.log(divider);
-        console.log("Item ID: " + res[0].item_id + " | " + "Product Name: " + res[0].product_name + " | " + "Price: $" + res[0].price);
-
-        // Check for enough product inventory
-        if (res[0].stock_quantity < answer.prodUnits) {
-          // If not, log `Insufficient quantity!`, and stop the order
-          console.log("Sorry, we have insufficient quantity to complete your order.");
-          console.log(divider);
-          connection.end();
-        } else {
-          // If inventory available, fulfill the order.
-          // * Update the SQL database to the remaining quantity
-          connection.query(
-            "UPDATE products SET ? WHERE ?", [{
-                stock_quantity: (res[0].stock_quantity - answer.prodUnits)
-              },
-              {
-                item_id: answer.prodPick
+  connection.query("SELECT * FROM products", function (err, res) {
+    inquirer
+      .prompt([{
+          name: "prodPick",
+          type: "input",
+          message: "Welcome to Bamazon.  Please enter the Item ID of the product that you would like to buy:",
+          validate: function (value) {
+            if (isNaN(value) === false && value > 0) {
+              if (value <= res.length) {
+                return true;
               }
-            ],
-            function (error) {
-              if (error) throw err;
-              // * Show the customer the total purchase cost
-              console.log("Order quantity: " + answer.prodUnits + " | " + "Price: $" + res[0].price + " | " + "Total purchase: $" + (answer.prodUnits * res[0].price));
-              console.log(divider);
-              connection.end();
+              return false;
             }
-          );
+            return false;
+          }
+        },
+        {
+          name: "prodUnits",
+          type: "input",
+          message: "Please enter the number of units of the product you would like to buy:",
+          validate: function (value) {
+            if (isNaN(value) === false && value > 0) {
+              return true;
+            }
+            return false;
+          }
         }
+      ]).then(function (answer) {
+        connection.query("SELECT * FROM products WHERE ?", {
+          item_id: answer.prodPick
+        }, function (err, res) {
+          console.log(divider);
+          console.log("Item ID: " + res[0].item_id + " | " + "Product Name: " + res[0].product_name + " | " + "Price: $" + res[0].price);
+
+          // Check for enough product inventory
+          if (res[0].stock_quantity < answer.prodUnits) {
+            // If not, log `Insufficient quantity!`, and stop the order
+            console.log("Sorry, we have insufficient quantity to complete your order.");
+            console.log(divider);
+            connection.end();
+          } else {
+            // If inventory available, fulfill the order.
+            // * Update the SQL database to the remaining quantity
+            connection.query(
+              "UPDATE products SET ? WHERE ?", [{
+                  stock_quantity: (res[0].stock_quantity - answer.prodUnits)
+                },
+                {
+                  item_id: answer.prodPick
+                }
+              ],
+              function (error) {
+                if (error) throw err;
+                // * Show the customer the total purchase cost
+                console.log("Order quantity: " + answer.prodUnits + " | " + "Price: $" + res[0].price + " | " + "Total purchase: $" + (answer.prodUnits * res[0].price));
+                console.log(divider);
+                connection.end();
+              }
+            );
+          }
+        })
       })
-    })
-};
+  });
+}
