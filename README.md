@@ -16,7 +16,7 @@ This command line app is useful as a tool for working with database data through
 Upon loading, Bamazon presents the user with:
 
 1.  A display all of the items available for sale.  This includes the ids, names, and prices of products for sale.
-[[https://github.com/rscottjohnson/Bamazon/assets/Screen Shot - bamCust1.png|alt=customer view 1]]
+[[https://github.com/rscottjohnson/Bamazon/assets/ScreenShot-bamCust1.png|alt=customer_view_1]]
 
 6. The app should then prompt users with two messages.
 
