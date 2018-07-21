@@ -25,8 +25,7 @@ Upon loading, Bamazon presents the user with:
 
    * The first asks them the ID of the product they would like to buy.
    * The second asks how many units of the product they would like to buy.
-
-3. If the store _does_ have enough of the product, the order is fulfilled.
+   * If the store has enough of the product, the order is fulfilled.
    * The SQL database is updated to reflect the remaining quantity.
    * The total cost of the purchase is presented to the customer.
 
@@ -39,11 +38,11 @@ Upon loading, Bamazon presents the user with:
 ### Bamazon Manager Interface
 
 1. The manager is presented with five available options:
-  * View products for Sale
-  * View Low Inventory
-  * Add to Inventory
-  * Add New Product
-  * Exit
+    * View products for Sale
+    * View Low Inventory
+    * Add to Inventory
+    * Add New Product
+    * Exit
 
   ![Manager view 1](https://github.com/rscottjohnson/Bamazon/blob/master/assets/ScreenShot-bamMgr1.png)
 
