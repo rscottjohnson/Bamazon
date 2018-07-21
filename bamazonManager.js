@@ -107,37 +107,54 @@ function lowInventory() {
 }
 
 function addInventory() {
-  inquirer
-    .prompt([{
-        name: "prodPick",
-        type: "input",
-        message: "Please enter the Item ID of the product that you would like to add inventory to:"
-      },
-      {
-        name: "prodUnits",
-        type: "input",
-        message: "Please enter the number of units of the product to add to inventory:"
-      }
-    ]).then(function (answer) {
-      connection.query("SELECT stock_quantity FROM products WHERE ?", {
-        item_id: answer.prodPick
-      }, function (err, res) {
-        if (err) throw err;
-        var newStock = res[0].stock_quantity + parseInt(answer.prodUnits);
-        connection.query("UPDATE products SET ? WHERE ?", [{
-            stock_quantity: newStock
-          }, {
-            item_id: answer.prodPick
-          }],
-          function (error) {
-            if (error) throw err;
-            console.log(divider);
-            console.log("Inventory updated");
-            console.log(divider);
-            managerOptions();
-          });
+  connection.query("SELECT * FROM products", function (err, res) {
+    inquirer
+      .prompt([{
+          name: "prodPick",
+          type: "input",
+          message: "Please enter the Item ID of the product that you would like to add inventory to:",
+          validate: function (value) {
+            if (isNaN(value) === false && value > 0) {
+              if (value <= res.length) {
+                return true;
+              }
+              return false;
+            }
+            return false;
+          }
+        },
+        {
+          name: "prodUnits",
+          type: "input",
+          message: "Please enter the number of units of the product to add to inventory:",
+          validate: function (value) {
+            if (isNaN(value) === false && value > 0) {
+              return true;
+            }
+            return false;
+          }
+        }
+      ]).then(function (answer) {
+        connection.query("SELECT stock_quantity FROM products WHERE ?", {
+          item_id: answer.prodPick
+        }, function (err, res) {
+          if (err) throw err;
+          var newStock = res[0].stock_quantity + parseInt(answer.prodUnits);
+          connection.query("UPDATE products SET ? WHERE ?", [{
+              stock_quantity: newStock
+            }, {
+              item_id: answer.prodPick
+            }],
+            function (error) {
+              if (error) throw err;
+              console.log(divider);
+              console.log("Inventory updated");
+              console.log(divider);
+              managerOptions();
+            });
+        });
       });
-    });
+  });
 }
 
 function addProduct() {
@@ -155,12 +172,24 @@ function addProduct() {
       {
         name: "prodPrice",
         type: "input",
-        message: "Please enter the price for the product being added:"
+        message: "Please enter the price for the product being added:",
+        validate: function (value) {
+          if (isNaN(value) === false && value > 0) {
+            return true;
+          }
+          return false;
+        }
       },
       {
         name: "prodStock",
         type: "input",
-        message: "Please enter the beginning stock of the product being added:"
+        message: "Please enter the beginning stock of the product being added:",
+        validate: function (value) {
+          if (isNaN(value) === false && value > 0) {
+            return true;
+          }
+          return false;
+        }
       }
     ]).then(function (answer) {
       connection.query("INSERT INTO products SET ?", {
