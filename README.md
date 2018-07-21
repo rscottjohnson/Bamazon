@@ -17,7 +17,7 @@ Upon loading, Bamazon presents the user with:
 
 1.  A display all of the items available for sale.  This includes the ids, names, and prices of products for sale.
 
-![Bamazon customer view 1](/assets/Screen Shot - bamCust1.jpg?raw=true "Optional Title")
+![Bamazon customer view 1](/assets/Screen Shot - bamCust1.png?raw=true "Optional Title")
 
 6. The app should then prompt users with two messages.
 
