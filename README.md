@@ -29,9 +29,9 @@ Upon loading, Bamazon presents the user with:
    * The SQL database is updated to reflect the remaining quantity.
    * The total cost of the purchase is presented to the customer.
 
-![Customer view 2](https://github.com/rscottjohnson/Bamazon/blob/master/assets/ScreenShot-bamCust2.png)
+  ![Customer view 2](https://github.com/rscottjohnson/Bamazon/blob/master/assets/ScreenShot-bamCust2.png)
 
-4. If the store _doesn't_ have enough of the product, the app logs a phrase of `insufficient quantity`, and then prevents the order from going through.
+3. If the store _doesn't_ have enough of the product, the app logs a phrase of `insufficient quantity`, and then prevents the order from going through.
 
    ![Customer view 3](https://github.com/rscottjohnson/Bamazon/blob/master/assets/ScreenShot-bamCust3.png)
 
